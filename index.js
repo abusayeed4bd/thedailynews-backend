@@ -17,6 +17,9 @@ async function run() {
     try {
         await client.connect();
         const newsCollection = client.db('news').collection('posts');
+        const userCollection = client.db('news').collection('user');
+
+        // news post/ get/ single post get methods
 
         app.post("/news", async (req, res) => {
             const data = req.body;
@@ -41,7 +44,21 @@ async function run() {
 
         })
 
+        // user collection update or insert methods
 
+
+        app.put("/user/:email", async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const option = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+
+            const result = await userCollection.updateOne(filter, updateDoc, option);
+            res.send(result);
+        })
 
 
     }
